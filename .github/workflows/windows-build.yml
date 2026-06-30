@@ -1,0 +1,68 @@
+name: Windows Build
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build Qt 6 app on Windows
+    runs-on: windows-latest
+
+    env:
+      VCPKG_ROOT: C:\vcpkg
+      BUILD_DIR: build
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up MSVC developer command prompt
+        uses: ilammy/msvc-dev-cmd@v1
+
+      - name: Set up vcpkg
+        shell: pwsh
+        run: |
+          if (!(Test-Path "$env:VCPKG_ROOT\vcpkg.exe")) {
+            git clone https://github.com/microsoft/vcpkg.git "$env:VCPKG_ROOT"
+            & "$env:VCPKG_ROOT\bootstrap-vcpkg.bat"
+          }
+
+      - name: Configure CMake
+        shell: pwsh
+        run: |
+          cmake -B "$env:BUILD_DIR" -S . `
+            -G "Visual Studio 17 2022" -A x64 `
+            -DCMAKE_TOOLCHAIN_FILE="$env:VCPKG_ROOT\scripts\buildsystems\vcpkg.cmake" `
+            -DGAME_PERF_ENABLE_MOCK=ON
+
+      - name: Build Debug
+        shell: pwsh
+        run: cmake --build "$env:BUILD_DIR" --config Debug --parallel
+
+      - name: Deploy Qt runtime
+        shell: pwsh
+        run: |
+          $exe = Join-Path $env:GITHUB_WORKSPACE "$env:BUILD_DIR\Debug\GamePerfMonitor.exe"
+          if (!(Test-Path $exe)) {
+            throw "GamePerfMonitor.exe was not found at $exe"
+          }
+
+          $qtRoot = Get-ChildItem "$env:BUILD_DIR\vcpkg_installed\x64-windows" -Directory -ErrorAction SilentlyContinue | Select-Object -First 1
+          $windeployqt = Get-ChildItem "$env:BUILD_DIR\vcpkg_installed" -Recurse -Filter windeployqt.exe | Select-Object -First 1
+          if ($null -eq $windeployqt) {
+            throw "windeployqt.exe was not found under vcpkg_installed"
+          }
+
+          & $windeployqt.FullName --no-translations --compiler-runtime $exe
+
+      - name: Create artifact folder
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path artifact | Out-Null
+          Copy-Item "$env:BUILD_DIR\Debug\*" artifact -Recurse -Force
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: GamePerfMonitor-Windows-Debug
+          path: artifact

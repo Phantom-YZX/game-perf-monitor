@@ -1,0 +1,10 @@
+/* HUD 专用样式：透明背景、紧凑文字 */
+QHudWindow {
+    background: transparent;
+}
+HudWindow {
+    background: transparent;
+}
+QLabel {
+    color: white;
+}

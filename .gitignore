@@ -1,0 +1,17 @@
+build/
+build-*/
+.vs/
+.vscode/
+*.user
+*.suo
+*.sdf
+*.opensdf
+CMakeUserPresets.json
+vcpkg_installed/
+*.obj
+*.o
+*.exe
+*.dll
+*.lib
+*.pdb
+.cache/
