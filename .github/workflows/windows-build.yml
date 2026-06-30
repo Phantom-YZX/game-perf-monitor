@@ -22,6 +22,14 @@ jobs:
       - name: Set up MSVC developer command prompt
         uses: ilammy/msvc-dev-cmd@v1
 
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: 6.8.3
+          arch: win64_msvc2022_64
+          modules: qtcharts qt5compat
+          cache: true
+
       - name: Set up vcpkg
         shell: pwsh
         run: |
@@ -36,6 +44,7 @@ jobs:
           cmake -B "$env:BUILD_DIR" -S . `
             -G "Visual Studio 17 2022" -A x64 `
             -DCMAKE_TOOLCHAIN_FILE="$env:GPM_VCPKG_ROOT\scripts\buildsystems\vcpkg.cmake" `
+            -DQt6_DIR="$env:Qt6_DIR" `
             -DGAME_PERF_ENABLE_MOCK=ON
 
       - name: Build Debug
@@ -50,13 +59,12 @@ jobs:
             throw "GamePerfMonitor.exe was not found at $exe"
           }
 
-          $qtRoot = Get-ChildItem "$env:BUILD_DIR\vcpkg_installed\x64-windows" -Directory -ErrorAction SilentlyContinue | Select-Object -First 1
-          $windeployqt = Get-ChildItem "$env:BUILD_DIR\vcpkg_installed" -Recurse -Filter windeployqt.exe | Select-Object -First 1
-          if ($null -eq $windeployqt) {
-            throw "windeployqt.exe was not found under vcpkg_installed"
+          $windeployqt = Join-Path (Resolve-Path "$env:Qt6_DIR\..\..\..\bin") "windeployqt.exe"
+          if (!(Test-Path $windeployqt)) {
+            throw "windeployqt.exe was not found at $windeployqt"
           }
 
-          & $windeployqt.FullName --no-translations --compiler-runtime $exe
+          & $windeployqt --no-translations --compiler-runtime $exe
 
       - name: Create artifact folder
         shell: pwsh

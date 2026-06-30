@@ -3,9 +3,6 @@
   "version-string": "1.0.0",
   "description": "Windows game performance monitor (CPU/GPU/RAM/FPS/etc.) with floating HUD and per-game HTML reports.",
   "dependencies": [
-    "qtbase",
-    "qtcharts",
-    "qt5compat",
     "nlohmann-json",
     "spdlog",
     "fmt",
