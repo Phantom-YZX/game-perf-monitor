@@ -2,7 +2,7 @@
   "name": "game-perf-monitor",
   "version-string": "1.0.0",
   "description": "Windows game performance monitor (CPU/GPU/RAM/FPS/etc.) with floating HUD and per-game HTML reports.",
-  "builtin-baseline": "3426db05b996481ca31e95fff3734cf23e0f51bc",
+  "builtin-baseline": "86dc619bd8d9697405ae5c944b474117ea9457ce",
   "dependencies": [
     "qtbase",
     "qtcharts",
