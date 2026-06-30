@@ -137,8 +137,8 @@ target_link_libraries(GamePerfMonitor PRIVATE
     nlohmann_json::nlohmann_json
     spdlog::spdlog
     fmt::fmt
-    inja::inja
-    SQLiteCpp::SQLiteCpp
+    pantor::inja
+    SQLiteCpp
 )
 
 if(WIN32)
