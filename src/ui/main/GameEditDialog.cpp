@@ -1,5 +1,6 @@
 #include "ui/main/GameEditDialog.h"
 #include "sampler/AdapterRegistry.h"
+#include "storage/GameConfigStore.h"
 
 #include <QDialogButtonBox>
 #include <QFormLayout>
