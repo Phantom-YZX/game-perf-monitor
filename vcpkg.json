@@ -2,7 +2,6 @@
   "name": "game-perf-monitor",
   "version-string": "1.0.0",
   "description": "Windows game performance monitor (CPU/GPU/RAM/FPS/etc.) with floating HUD and per-game HTML reports.",
-  "builtin-baseline": "86dc619bd8d9697405ae5c944b474117ea9457ce",
   "dependencies": [
     "qtbase",
     "qtcharts",
@@ -12,9 +11,5 @@
     "fmt",
     "inja",
     "sqlitecpp"
-  ],
-  "overrides": [
-    { "name": "qtbase",    "version": "6.8.3" },
-    { "name": "qtcharts", "version": "6.8.3" }
   ]
 }
