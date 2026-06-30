@@ -9,10 +9,10 @@ on:
 jobs:
   build:
     name: Build Qt 6 app on Windows
-    runs-on: windows-latest
+    runs-on: windows-2022
 
     env:
-      VCPKG_ROOT: C:\vcpkg
+      GPM_VCPKG_ROOT: C:\vcpkg
       BUILD_DIR: build
 
     steps:
@@ -25,9 +25,9 @@ jobs:
       - name: Set up vcpkg
         shell: pwsh
         run: |
-          if (!(Test-Path "$env:VCPKG_ROOT\vcpkg.exe")) {
-            git clone https://github.com/microsoft/vcpkg.git "$env:VCPKG_ROOT"
-            & "$env:VCPKG_ROOT\bootstrap-vcpkg.bat"
+          if (!(Test-Path "$env:GPM_VCPKG_ROOT\vcpkg.exe")) {
+            git clone https://github.com/microsoft/vcpkg.git "$env:GPM_VCPKG_ROOT"
+            & "$env:GPM_VCPKG_ROOT\bootstrap-vcpkg.bat"
           }
 
       - name: Configure CMake
@@ -35,7 +35,7 @@ jobs:
         run: |
           cmake -B "$env:BUILD_DIR" -S . `
             -G "Visual Studio 17 2022" -A x64 `
-            -DCMAKE_TOOLCHAIN_FILE="$env:VCPKG_ROOT\scripts\buildsystems\vcpkg.cmake" `
+            -DCMAKE_TOOLCHAIN_FILE="$env:GPM_VCPKG_ROOT\scripts\buildsystems\vcpkg.cmake" `
             -DGAME_PERF_ENABLE_MOCK=ON
 
       - name: Build Debug
